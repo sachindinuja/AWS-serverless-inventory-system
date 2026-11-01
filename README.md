@@ -120,6 +120,12 @@ This function is triggered whenever an inventory CSV file is uploaded to S3, par
    - **Endpoint:** Enter your personal/work email address
 5. Choose **Create subscription**, then open your email inbox and click **Confirm subscription**.
 
+![](docs/screenshots/create-subscription.png)
+
+![](docs/screenshots/receive-a-confirmation-email-message.png)
+
+![](docs/screenshots/subscription-confirmed.png)
+
 ---
 
 ### Step 6: Creating the Stock-Monitoring Lambda Function (`Check-Stock`)
