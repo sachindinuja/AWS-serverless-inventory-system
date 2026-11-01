@@ -67,21 +67,33 @@ This function is triggered whenever an inventory CSV file is uploaded to S3, par
    - **Runtime:** `Python 3.x`
    - **Execution role:** Use an existing role -> `Lambda-Load-Inventory-Role`
 3. Choose **Create function**.
+
+![Load-Inventory](docs/screenshots/load-inventory-funtion.png)
+
+![Existing role: Lambda-Load-Inventory-Role](docs/screenshots/lmbda-load-inventory-role.png)
+
+
+
 4. Paste the ingestion code from [`src/lambda_load_inventory/lambda_function.py`](src/lambda_load_inventory/lambda_function.py) and click **Deploy**.
+
+![deploy-Lambda-Load-Inventory](docs/screenshots/lambda-inventory-funtion-code-deploy.png)
 
 ---
 
 ### Step 3: Configuring the Amazon S3 Bucket & Event Notification
 1. Navigate to **Amazon S3** -> **Create bucket**.
 2. Enter a globally unique bucket name (e.g., `inventory-store-bucket-xyz`) and choose **Create bucket**.
+
+![create s3 bucket](docs/screenshots/s3-bucket.png)
+
 3. Open the bucket -> **Properties** tab -> Scroll down to **Event notifications** -> **Create event notification**.
 4. Configure the notification settings:
    - **Event name:** `Load-Inventory`
    - **Event types:** Check **All object create events** (`s3:ObjectCreated:*`)
    - **Destination:** Lambda Function -> `Load-Inventory`
-5. Choose **Save changes**. *(See [`docs/screenshots/s3-bucket.png`](docs/screenshots/s3-bucket.png) for reference)*
+5. Choose **Save changes**. *(See [`docs/screenshots/s3-bucket.png`](docs/screenshots/Create-event-notification-S3-bucket.png) for reference)*
 
-![S3 Bucket Configuration](docs/screenshots/s3-bucket.png)
+![](docs/screenshots/Create-event-notification-select-destination.png)
 
 ---
 
@@ -128,7 +140,10 @@ Instead of overloading the ingestion function with notification logic, this deco
 ### Step 7: Testing the System
 1. Download a sample CSV file containing an item with `count=0` (e.g., `inventory-berlin.csv`).
 2. Upload the file to your **S3 bucket**.
+
+![](docs/screenshots/upload-suceeded.png)
+
 3. Verify that the `Load-Inventory` Lambda processed the file and inserted records into the **DynamoDB** `Inventory` table.
 4. Verify that when an item with a `0` count is inserted, the `Check-Stock` Lambda triggers via **DynamoDB Streams** and dispatches an instant alert email via **Amazon SNS**. *(See [`docs/screenshots/received-email.png`](docs/screenshots/received-email.png) for verification)*
 
-![Received Email Alert](docs/screenshots/received-email.png)
+![Received Email Alert](docs/screenshots/recived-email-notification.png)
