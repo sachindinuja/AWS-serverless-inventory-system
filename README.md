@@ -93,7 +93,7 @@ This function is triggered whenever an inventory CSV file is uploaded to S3, par
    - **Destination:** Lambda Function -> `Load-Inventory`
 5. Choose **Save changes**.
 
-![](docs/screenshots/Create-event-notification-select-destination.png)
+![](docs/screenshots/Create-event-notification-S3-bucket.png)
 
 ![](docs/screenshots/Create-event-notification-select-destination.png)
 
