@@ -46,3 +46,104 @@ Before provisioning compute resources, create the execution roles required for b
 		}
 	]
 }
+
+
+Step 2: Creating the Data Ingestion Lambda Function (Load-Inventory)
+This function is triggered whenever an inventory CSV file is uploaded to S3, parsing each row into the DynamoDB table.
+
+Navigate to AWS Lambda -> Create function -> Author from scratch.
+
+Configure the settings:
+
+Function name: Load-Inventory
+
+Runtime: Python 3.x
+
+Execution role: Use an existing role -> Lambda-Load-Inventory-Role
+
+Choose Create function.
+
+Paste the ingestion code into src/lambda_load_inventory/lambda_function.py and click Deploy.
+
+Step 3: Configuring the Amazon S3 Bucket & Event Notification
+Navigate to Amazon S3 -> Create bucket.
+
+Enter a globally unique bucket name (e.g., inventory-store-bucket-xyz) and choose Create bucket.
+
+Open the bucket -> Properties tab -> Scroll down to Event notifications -> Create event notification.
+
+Configure the notification settings:
+
+Event name: Load-Inventory
+
+Event types: Check All object create events (s3:ObjectCreated:*)
+
+Destination: Lambda Function -> Load-Inventory
+
+Choose Save changes.(See docs/screenshots/s3-bucket.png for reference)
+
+Step 4: Configuring Amazon DynamoDB & Streams
+Navigate to Amazon DynamoDB -> Tables -> Create table.
+
+Configure settings:
+
+Table name: Inventory
+
+Partition key: Store (String)
+
+Sort key: Item (String)
+
+Under DynamoDB stream details, enable New image so updates can be captured by streams.
+
+Step 5: Configuring Amazon SNS for Low-Stock Alerts
+Navigate to Simple Notification Service (SNS) -> Topics -> Create topic.
+
+Configure the topic:
+
+Type: Standard
+
+Name: NoStock
+
+Choose Create topic.
+
+Inside the NoStock topic page, choose Create subscription:
+
+Protocol: Email
+
+Endpoint: Enter your personal/work email address
+
+Choose Create subscription, then open your email inbox and click Confirm subscription.
+
+Step 6: Creating the Stock-Monitoring Lambda Function (Check-Stock)
+Instead of overloading the ingestion function with notification logic, this decoupled function reads from the DynamoDB Stream and publishes alerts when an item count reaches zero.
+
+Navigate to AWS Lambda -> Create function -> Author from scratch.
+
+Configure the settings:
+
+Function name: Check-Stock
+
+Runtime: Python 3.x
+
+Execution role: Use an existing role -> Lambda-Check-Stock-Role (ensure it has DynamoDB Stream read permissions and SNS publish permissions).
+
+Choose Create function.
+
+Paste the monitoring code into src/lambda_check_stock/lambda_function.py and choose Deploy.
+
+In the Function overview section at the top, choose Add trigger:
+
+Select a source: DynamoDB
+
+DynamoDB table: Inventory
+
+Choose Add to activate the stream trigger.
+
+Step 7: Testing the System
+Download a sample CSV file containing an item with count=0 (e.g., inventory-berlin.csv).
+
+Upload the file to your S3 bucket.
+
+Verify that the Load-Inventory Lambda processed the file and inserted records into the DynamoDB Inventory table.
+
+Verify that when an item with a 0 count is inserted, the Check-Stock Lambda triggers via DynamoDB Streams and dispatches an instant alert email via Amazon SNS.( See docs/screenshots/received-email.png for verification)
