@@ -48,6 +48,8 @@ Before provisioning compute resources, create the execution roles required for b
 }
 ```
 
+![Lambda-Load-Inventory-Role](docs/screenshots/lambda-Load-Inventory-Role.png)
+
 #### B. Create `Lambda-Check-Stock-Role`
 1. Open the **IAM Console** -> **Roles** -> **Create role**.
 2. Select **AWS service** and choose **Lambda** as the use case.
@@ -55,6 +57,8 @@ Before provisioning compute resources, create the execution roles required for b
    - `AmazonSNSFullAccess`
    - `AWSLambdaDynamoDBExecutionRole`
 4. Name the role `Lambda-Check-Stock-Role` and create it.
+
+![Lambda-Check-Stock-Role](docs/screenshots/lambda-check-stock-role-policies.png)
 
 ---
 
