@@ -142,10 +142,15 @@ Instead of overloading the ingestion function with notification logic, this deco
    - **Execution role:** Use an existing role -> `Lambda-Check-Stock-Role` *(ensure it has DynamoDB Stream read permissions and SNS publish permissions)*.
 3. Choose **Create function**.
 4. Paste the monitoring code from [`src/lambda_check_stock/lambda_function.py`](src/lambda_check_stock/lambda_function.py) and choose **Deploy**.
+
+![lambda_check_stock](docs/screenshots/deploy-Stock-Check-Lambda-function.png)
+
 5. In the **Function overview** section at the top, choose **Add trigger**:
    - **Select a source:** `DynamoDB`
    - **DynamoDB table:** `Inventory`
 6. Choose **Add** to activate the stream trigger.
+
+![activate-stream-trigger](docs/screenshots/add-trigger.png)
 
 ---
 
